@@ -1,0 +1,40 @@
+# Configuration Render.com
+# Ce fichier permet un déploiement automatique via Infrastructure as Code
+
+services:
+  # Service Web : API Playwright
+  - type: web
+    name: playwright-tracking-api
+    env: docker
+    # Lien vers votre repo GitHub (à modifier)
+    repo: https://github.com/VOTRE-USERNAME/playwright-api-render
+    region: frankfurt  # EU pour latence optimale depuis la France
+    branch: main
+    plan: free  # Plan gratuit (750h/mois)
+    
+    # Chemin vers le Dockerfile
+    dockerfilePath: ./Dockerfile
+    dockerContext: ./
+    
+    # Variables d'environnement
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PLAYWRIGHT_BROWSERS_PATH
+        value: /app/.cache/ms-playwright
+    
+    # Health check
+    healthCheckPath: /health
+    
+    # Auto-deploy quand vous push sur main
+    autoDeploy: true
+
+# Si vous voulez aussi PostgreSQL pour N8N, décommentez :
+#
+# databases:
+#   - name: n8n-database
+#     databaseName: n8n
+#     user: n8n
+#     region: frankfurt
+#     plan: free  # Gratuit pendant 90 jours
+#     ipAllowList: []  # Vide = accessible de partout
